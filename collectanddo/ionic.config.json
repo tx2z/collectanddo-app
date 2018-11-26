@@ -1,6 +1,8 @@
 {
   "name": "collectanddo",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular",
   "pro_id": "b4b72c10"
 }

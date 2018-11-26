@@ -1,4 +1,30 @@
 import { Component, OnInit } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
+
+const TODO_QUERY = gql`
+  query {
+    todo(where: {done: {_eq: false}}) {
+      id
+      title
+      content
+      url
+      done
+    }
+  }
+`;
+
+interface Todo {
+  id: number;
+  title: string;
+  content: string;
+  url: string;
+  done: boolean;
+}
+
+interface Response {
+  todo: Todo;
+}
 
 @Component({
   selector: 'app-list',
@@ -6,34 +32,24 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['list.page.scss']
 })
 export class ListPage implements OnInit {
-  private selectedItem: any;
-  private icons = [
-    'flask',
-    'wifi',
-    'beer',
-    'football',
-    'basketball',
-    'paper-plane',
-    'american-football',
-    'boat',
-    'bluetooth',
-    'build'
-  ];
-  public items: Array<{ title: string; note: string; icon: string }> = [];
-  constructor() {
-    for (let i = 1; i < 11; i++) {
-      this.items.push({
-        title: 'Item ' + i,
-        note: 'This is item #' + i,
-        icon: this.icons[Math.floor(Math.random() * this.icons.length)]
-      });
-    }
-  }
+
+  public items: any;
+  public loading = true;
+  public error: any;
+
+  constructor(private apollo: Apollo) {}
 
   ngOnInit() {
+    this.apollo
+      .watchQuery<Response>({
+        query: TODO_QUERY,
+      })
+      .valueChanges.subscribe(result => {
+        // console.log(result.data.todo);
+        this.items = result.data && result.data.todo;
+        this.loading = result.loading;
+        this.error = result.errors;
+      });
   }
-  // add back when alpha.4 is out
-  // navigate(item) {
-  //   this.router.navigate(['/list', JSON.stringify(item)]);
-  // }
+
 }

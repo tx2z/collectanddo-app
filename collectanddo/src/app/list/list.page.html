@@ -10,12 +10,17 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
+  <div *ngIf="loading">
+    Loading...
+  </div>
+  <div *ngIf="error">
+    Error :(
+  </div>
+  <ion-list *ngIf="items">
     <ion-item *ngFor="let item of items">
-      <ion-icon [name]="item.icon" slot="start"></ion-icon>
       {{item.title}}
-      <div class="item-note" slot="end">
-        {{item.note}}
+      <div class="item-content" slot="end">
+        {{item.content}}
       </div>
     </ion-item>
   </ion-list>
