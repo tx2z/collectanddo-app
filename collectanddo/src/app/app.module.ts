@@ -13,7 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,7 +38,7 @@ import { environment } from 'src/environments/environment.prod';
           link: httpLink.create({
             uri: 'http://172.17.8.101/v1alpha1/graphql',
             headers: {
-              'X-Hasura-Access-Key': 'XXX'
+              'X-Hasura-Access-Key': environment.HASURA_KEY
             }
           })
         };
