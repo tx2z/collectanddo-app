@@ -36,7 +36,7 @@ import { environment } from 'src/environments/environment';
         return {
           cache: new InMemoryCache(),
           link: httpLink.create({
-            uri: 'http://172.17.8.101/v1alpha1/graphql',
+            uri: environment.HASURA_URL,
             headers: {
               'X-Hasura-Access-Key': environment.HASURA_KEY
             }
