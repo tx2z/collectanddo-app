@@ -62,6 +62,7 @@ mutation insert_todo {
           id
           title
           content
+          color
         }
       }
     }
@@ -88,7 +89,7 @@ query {
       group {
         id
         title
-        content
+        color
       }
     }
   }
@@ -105,6 +106,7 @@ query {
     ) {
     id
     title
+    color
     group_todos (
       order_by: [{group: {created: desc}}, {group: {updated: desc}}]
       ) {
@@ -142,6 +144,7 @@ mutation insert_group {
       {
         title: "insert-group", 
         content: "test insert group", 
+        color: "primary"
       }
     ]
   ) {
@@ -174,7 +177,7 @@ query {
     group {
       id
       title
-
+      color
     }
   }
 }
@@ -203,6 +206,7 @@ query {
     group {
       id
       title
+      color
       group_todos(
         where: {todo: {done: {_eq: true}}},
         order_by: [{todo: {created: desc}}, {todo: {updated: desc}}]

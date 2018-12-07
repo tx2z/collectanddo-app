@@ -15,6 +15,12 @@ import { HttpLinkModule, HttpLink } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { environment } from 'src/environments/environment';
 
+const hasura_headers: any = {
+  'X-Hasura-Access-Key': environment.HASURA_KEY,
+  'X-HASURA-USER-ID': '1',
+  'X-HASURA-ROLE': 'user',
+};
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -37,9 +43,7 @@ import { environment } from 'src/environments/environment';
           cache: new InMemoryCache(),
           link: httpLink.create({
             uri: environment.HASURA_URL,
-            headers: {
-              'X-Hasura-Access-Key': environment.HASURA_KEY
-            }
+            headers: hasura_headers
           })
         };
       },

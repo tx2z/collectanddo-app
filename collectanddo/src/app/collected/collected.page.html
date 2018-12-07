@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Collected
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="loading">
+    Loading...
+  </div>
+  <div *ngIf="error">
+    Error :(
+  </div>
+
+  <div *ngIf="todos">
+    <ion-card *ngFor="let todo of todos">
+
+      <ion-card-header>
+        <ion-card-title [ngClass]="{'strike-through': todo.done == true}">
+          {{todo.title}}
+        </ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+        {{todo.content}}
+        <ion-button 
+        *ngIf="todo.url != null" 
+        expand="block" 
+        href="{{todo.url}}"
+        >
+          URL
+        </ion-button>
+      </ion-card-content>
+
+      <div class="text-right">
+
+        <ion-button 
+        *ngFor="let todogroup of todo.todo_groups" 
+        size="small" 
+        color="{{todogroup.group.color}}"
+        >
+          {{todogroup.group.title}}
+        </ion-button>
+
+      </div>
+
+    </ion-card>
+  </div>
+</ion-content>
