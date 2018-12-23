@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
+import { Router } from '@angular/router';
 
 import * as graphql from './collect.graphql';
+
 
 @Component({
   selector: 'app-collect',
@@ -10,23 +13,36 @@ import * as graphql from './collect.graphql';
 })
 export class CollectPage implements OnInit {
 
-  public items: any;
-  public loading = true;
-  public error: any;
+  private newTodo: FormGroup;
 
-  constructor(private apollo: Apollo) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private apollo: Apollo,
+    private router: Router
+    ) { }
 
   ngOnInit() {
-    this.apollo
-      .watchQuery<graphql.Response>({
-        query: graphql.TODO_QUERY,
-      })
-      .valueChanges.subscribe(result => {
-        // console.log(result.data.todo);
-        this.items = result.data && result.data.todo;
-        this.loading = result.loading;
-        this.error = result.errors;
-      });
+    this.newTodo = this.formBuilder.group({
+      title: ['', Validators.required],
+      url: [''],
+      content: [''],
+    });
+  }
+
+  saveTodo() {
+    console.log(this.newTodo.value);
+
+    this.apollo.mutate({
+      mutation: graphql.mutation,
+      variables: {
+        todoValue: this.newTodo.value
+      }
+    }).subscribe(({ data }) => {
+      console.log('got data', data);
+      this.router.navigate(['/collected']);
+    }, (error) => {
+      console.log('there was an error sending the query', error);
+    });
   }
 
 }

@@ -1,5 +1,4 @@
 import gql from 'graphql-tag';
-import * as interfaces from '../app.interfaces';
 
 export const query = gql`
 query {
@@ -25,5 +24,5 @@ query {
 `;
 
 export interface Response {
-    todo: interfaces.Todo;
+  todo: graphModel.Todo;
 }

@@ -10,9 +10,9 @@ import * as graphql from './collected.graphql';
 })
 export class CollectedPage implements OnInit {
 
-  public todos: any;
-  public loading = true;
-  public error: any;
+  private todos: any;
+  private loading = true;
+  private error: any;
 
   constructor(private apollo: Apollo) { }
 

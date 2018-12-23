@@ -10,23 +10,25 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="loading">
-    Loading...
-  </div>
-  <div *ngIf="error">
-    Error :(
-  </div>
-  <ion-list *ngIf="items">
-    <ion-item *ngFor="let item of items">
-      {{item.title}}
-      <div class="item-content" slot="end">
-        {{item.content}}
-      </div>
+  <form [formGroup]="newTodo" (ngSubmit)="saveTodo()">
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input type="text" formControlName="title"></ion-input>
     </ion-item>
-  </ion-list>
-  <!--
-    <div *ngIf="selectedItem" padding>
-      You navigated here from <b>{{selectedItem.title }}</b>
-    </div>
-  -->
+
+    <ion-item>
+      <ion-label position="floating">Url</ion-label>
+      <ion-input type="text" formControlName="url" inputmode="url"></ion-input>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label position="floating">Content</ion-label>
+      <ion-textarea formControlName="content"></ion-textarea>
+    </ion-item>
+    <ion-button 
+    type="submit" 
+    [disabled]="!newTodo.valid">
+      Submit
+    </ion-button>
+  </form>
 </ion-content>
