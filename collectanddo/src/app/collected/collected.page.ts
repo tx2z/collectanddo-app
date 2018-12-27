@@ -14,14 +14,28 @@ export class CollectedPage implements OnInit {
   private loading = true;
   private error: any;
 
-  constructor(private apollo: Apollo) { }
+  constructor(
+    private apollo: Apollo
+    ) { }
 
   ngOnInit() {
-    this.apollo
-      .watchQuery<graphql.Response>({
-        query: graphql.query,
-      })
-      .valueChanges.subscribe(result => {
+
+    const getCollected = this.apollo
+      .watchQuery<graphql.CollectedResponse>({
+        query: graphql.CollectedQuery,
+      });
+
+    getCollected
+      .subscribeToMore({
+        document: graphql.CollectedSubscription,
+        updateQuery: (previous, { subscriptionData }) => {
+          console.log(previous);
+          console.log(subscriptionData);
+          return { }
+        }
+      });
+
+    const querySubscription = getCollected.valueChanges.subscribe(result => {
         this.todos = result.data && result.data.todo;
         this.loading = result.loading;
         this.error = result.errors;
