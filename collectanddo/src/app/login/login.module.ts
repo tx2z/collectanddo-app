@@ -1,17 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-import { GraphQLModule } from 'src/app/app.apollo.config';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CollectedPage } from './collected.page';
+import { LoginPage } from './login.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: CollectedPage
+    component: LoginPage
   }
 ];
 
@@ -20,9 +19,10 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    GraphQLModule,
+    ReactiveFormsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CollectedPage]
+  declarations: [LoginPage]
 })
-export class CollectedPageModule {}
+
+export class LoginPageModule { }

@@ -20,6 +20,7 @@
     "@angular/platform-browser": "~7.0.0",
     "@angular/platform-browser-dynamic": "~7.0.0",
     "@angular/router": "~7.0.0",
+    "@auth0/angular-jwt": "^2.1.0",
     "@capacitor/cli": "1.0.0-beta.11",
     "@capacitor/core": "1.0.0-beta.11",
     "@ionic-native/core": "5.0.0-beta.21",
@@ -27,18 +28,23 @@
     "@ionic-native/status-bar": "5.0.0-beta.21",
     "@ionic/angular": "4.0.0-beta.16",
     "@ionic/pro": "2.0.3",
+    "@ionic/storage": "^2.2.0",
     "@types/graphql": "^14.0.3",
     "apollo-angular": "^1.5.0",
     "apollo-angular-link-http": "^1.4.0",
     "apollo-cache-inmemory": "^1.3.11",
     "apollo-client": "^2.4.7",
     "apollo-link": "^1.2.6",
+    "apollo-link-context": "^1.0.12",
+    "apollo-link-error": "^1.1.5",
     "apollo-link-ws": "^1.0.12",
     "cordova-plugin-ionic": "^5.2.7",
+    "cordova-sqlite-storage": "2.6.0",
     "core-js": "^2.5.4",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",
-    "rxjs": "~6.3.3",
+    "rxjs": "^6.3.3",
+    "rxjs-compat": "^6.3.3",
     "subscriptions-transport-ws": "^0.9.15",
     "zone.js": "~0.8.26"
   },
@@ -68,5 +74,10 @@
     "tslint": "~5.11.0",
     "typescript": "~3.1.6"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "cordova": {
+    "plugins": {
+      "cordova-sqlite-storage": {}
+    }
+  }
 }

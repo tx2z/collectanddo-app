@@ -8,7 +8,21 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { GraphQLModule } from './app.apollo.config';
+
+import { HttpClientModule } from '@angular/common/http';
+import { Storage, IonicStorageModule } from '@ionic/storage';
+import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
+
+import { environment } from 'src/environments/environment';
+
+export function jwtOptionsFactory(storage) {
+  return {
+    tokenGetter: () => {
+      return storage.get(environment.AUTH_TOKEN);
+    },
+    whitelistedDomains: [environment.JWT_SERVER]
+  };
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,7 +31,15 @@ import { GraphQLModule } from './app.apollo.config';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    GraphQLModule
+    HttpClientModule,
+    IonicStorageModule.forRoot(),
+    JwtModule.forRoot({
+      jwtOptionsProvider: {
+        provide: JWT_OPTIONS,
+        useFactory: jwtOptionsFactory,
+        deps: [Storage],
+      }
+    })
   ],
   providers: [
     StatusBar,

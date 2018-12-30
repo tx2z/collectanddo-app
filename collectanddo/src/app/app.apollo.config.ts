@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 
+import { AuthService } from 'src/app/services/auth.service';
+
 // Apollo
 import { Apollo, ApolloModule } from 'apollo-angular';
 import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
@@ -19,10 +21,13 @@ import { environment } from 'src/environments/environment';
     ]
 })
 export class GraphQLModule {
-    constructor(apollo: Apollo,
-        httpLink: HttpLink) {
+    constructor(
+        private apollo: Apollo,
+        private httpLink: HttpLink,
+        private authService: AuthService,
+        ) {
 
-        const token = localStorage.getItem(environment.AUTH_TOKEN);
+        const token = this.authService.userToken;
         const authorization = token ? `Bearer ${token}` : null;
         const headers = new HttpHeaders().append('Authorization', authorization);
 
@@ -33,32 +38,29 @@ export class GraphQLModule {
         };
 
         const uri = 'http://' + environment.HASURA_URL;
-        // const http = httpLink.create({ uri, headers });
-        const http = httpLink.create({
+        const http = this.httpLink.create({ uri, headers });
+        /*
+        const http = this.httpLink.create({
             uri: uri,
             headers: hasura_headers
         });
+        */
 
         const ws = new WebSocketLink({
             uri: 'ws://' + environment.HASURA_URL,
             options: {
                 reconnect: true,
-                /*
                 connectionParams: {
-                    authToken: localStorage.getItem(environment.AUTH_TOKEN),
+                    headers: {
+                        Authorization: authorization
+                    }
                 }
-                */
-                connectionParams: () => ({
-                    'X-Hasura-Access-Key': environment.HASURA_KEY,
-                    'X-HASURA-USER-ID': '1',
-                    'X-HASURA-ROLE': 'user',
-                })
             }
         });
 
 
         // create Apollo
-        apollo.create({
+        this.apollo.create({
             link: ApolloLink.split(
                 operation => {
                     const operationAST = getOperationAST(operation.query, operation.operationName);
