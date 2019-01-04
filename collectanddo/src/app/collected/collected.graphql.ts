@@ -1,8 +1,11 @@
 import gql from 'graphql-tag';
 
 export const CollectedSubscription = gql`
-    subscription CollectedSubscription {
-      todo (
+subscription CollectedSubscription (
+  $creationDate: timestamptz
+) {
+  todo (
+    where: { created: {_gte: $creationDate} },
     order_by: [{created: desc}, {updated: desc}]
     ) {
     id
@@ -20,13 +23,14 @@ export const CollectedSubscription = gql`
       }
     }
   }
-    }
-  `;
+}
+`;
 
 export const CollectedQuery = gql`
 query {
   todo (
-    order_by: [{created: desc}, {updated: desc}]
+    order_by: [{created: desc}, {updated: desc}],
+    limit: 5
     ) {
     id
     title

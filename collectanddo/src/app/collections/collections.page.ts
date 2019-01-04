@@ -5,36 +5,36 @@ import { AuthService } from 'src/app/services/auth.service';
 
 import { Subscription } from 'rxjs/Subscription';
 
-import * as graphql from './collected.graphql';
+import * as graphql from './collections.graphql';
 
 @Component({
-  selector: 'app-collected',
-  templateUrl: './collected.page.html',
-  styleUrls: ['./collected.page.scss'],
+  selector: 'app-collections',
+  templateUrl: './collections.page.html',
+  styleUrls: ['./collections.page.scss'],
 })
-export class CollectedPage implements OnInit, OnDestroy {
+export class CollectionsPage implements OnInit, OnDestroy {
 
-  private todoSubscription: Subscription;
-  private todoQuery: QueryRef<any>;
-  private todos: graphModel.Todo[] = [];
+  private groupSubscription: Subscription;
+  private groupQuery: QueryRef<any>;
+  private groups: graphModel.Group[] = [];
   private loading = true;
   private error: any;
 
   constructor(
     private apollo: Apollo,
     private authService: AuthService,
-    ) { }
+  ) { }
 
   ngOnInit() {
 
-    this.todoQuery = this.apollo.watchQuery<graphql.CollectedResponse>({
-      query: graphql.CollectedQuery
+    this.groupQuery = this.apollo.watchQuery<graphql.CollectionsResponse>({
+      query: graphql.CollectionsQuery
     });
 
-    this.todoSubscription = this.todoQuery.valueChanges.subscribe(
+    this.groupSubscription = this.groupQuery.valueChanges.subscribe(
       ({ data }) => {
-        if (data && data.todo) {
-          this.todos = [...data.todo];
+        if (data && data.group) {
+          this.groups = [...data.group];
           this.loading = false;
           this.error = null;
         }
@@ -48,24 +48,24 @@ export class CollectedPage implements OnInit, OnDestroy {
   }
 
   setupSubscription(date: string) {
-    this.todoQuery.subscribeToMore({
-      document: graphql.CollectedSubscription,
+    this.groupQuery.subscribeToMore({
+      document: graphql.CollectionsSubscription,
       variables: {
         creationDate: date,
       },
       updateQuery: (prev, { subscriptionData }) => {
 
-        if (subscriptionData.data && subscriptionData.data.todo && subscriptionData.data.todo.length > 0) {
+        if (subscriptionData.data && subscriptionData.data.group && subscriptionData.data.group.length > 0) {
           console.log('prev');
           console.log(prev);
           console.log('subscriptionData');
           console.log(subscriptionData.data);
           console.log(date);
 
-          const newTodo = subscriptionData.data.todo[0];
+          const newGroup = subscriptionData.data.group[0];
 
           return Object.assign({}, prev, {
-            todo: [newTodo, ...prev['todo']]
+            group: [newGroup, ...prev['group']]
           });
         } else {
           return prev;
@@ -75,7 +75,7 @@ export class CollectedPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.todoSubscription.unsubscribe();
+    this.groupSubscription.unsubscribe();
   }
 
   logout() {

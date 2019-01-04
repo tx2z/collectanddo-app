@@ -21,6 +21,11 @@ export class AppComponent {
       title: 'Collected',
       url: '/collected',
       icon: 'list'
+    },
+    {
+      title: 'Collections',
+      url: '/collections',
+      icon: 'list'
     }
   ];
 

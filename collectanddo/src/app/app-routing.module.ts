@@ -21,7 +21,8 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: './login/login.module#LoginPageModule'
-  }
+  },
+  { path: 'collections', loadChildren: './collections/collections.module#CollectionsPageModule' }
 ];
 
 @NgModule({

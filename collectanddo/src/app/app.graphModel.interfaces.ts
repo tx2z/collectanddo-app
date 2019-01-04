@@ -4,9 +4,14 @@ namespace graphModel {
         title: string;
         content: string;
         color: string;
+        created?: string;
+        group_todos?: Array<GroupTodo>;
     }
     export interface Todogroup {
         group: Group;
+    }
+    export interface GroupTodo {
+        todo: Todo;
     }
     export interface Todo {
         id: number;
@@ -14,6 +19,7 @@ namespace graphModel {
         content: string;
         url: string;
         done: boolean;
-        todo_groups: Array<Todogroup>;
+        created?: boolean;
+        todo_groups?: Array<Todogroup>;
     }
 }

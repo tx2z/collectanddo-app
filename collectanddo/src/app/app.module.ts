@@ -9,6 +9,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { HttpClientModule } from '@angular/common/http';
 import { Storage, IonicStorageModule } from '@ionic/storage';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
@@ -31,6 +33,7 @@ export function jwtOptionsFactory(storage) {
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
     JwtModule.forRoot({
