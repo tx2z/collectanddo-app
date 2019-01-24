@@ -9,6 +9,10 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'login',
+    loadChildren: './login/login.module#LoginPageModule'
+  },
+  {
     path: 'collect',
     loadChildren: './collect/collect.module#CollectPageModule',
     canActivate: [AuthGuardService]
@@ -19,10 +23,11 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
-    path: 'login',
-    loadChildren: './login/login.module#LoginPageModule'
+    path: 'collections',
+    loadChildren: './collections/collections.module#CollectionsPageModule',
+    canActivate: [AuthGuardService]
   },
-  { path: 'collections', loadChildren: './collections/collections.module#CollectionsPageModule' }
+  { path: 'options', loadChildren: './options/options.module#OptionsPageModule' }
 ];
 
 @NgModule({

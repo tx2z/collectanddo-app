@@ -10,8 +10,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
 import { getOperationAST } from 'graphql';
 import { WebSocketLink } from 'apollo-link-ws';
-import { environment } from 'src/environments/environment';
-
+import { StorageEnvService } from './services/storage-env.service';
 
 @NgModule({
     exports: [
@@ -25,29 +24,19 @@ export class GraphQLModule {
         private apollo: Apollo,
         private httpLink: HttpLink,
         private authService: AuthService,
+        private storageEnv: StorageEnvService
         ) {
 
+        const envOptions: interfaces.EnvOptions = storageEnv.getOptions();
         const token = this.authService.userToken;
         const authorization = token ? `Bearer ${token}` : null;
         const headers = new HttpHeaders().append('Authorization', authorization);
 
-        const hasura_headers: any = {
-            'X-Hasura-Access-Key': environment.HASURA_KEY,
-            'X-HASURA-USER-ID': '1',
-            'X-HASURA-ROLE': 'user',
-        };
-
-        const uri = 'http://' + environment.HASURA_URL;
+        const uri = (envOptions.hasura_secure ? 'https://' : 'http://') + envOptions.hasura_url;
         const http = this.httpLink.create({ uri, headers });
-        /*
-        const http = this.httpLink.create({
-            uri: uri,
-            headers: hasura_headers
-        });
-        */
 
         const ws = new WebSocketLink({
-            uri: 'ws://' + environment.HASURA_URL,
+            uri: (envOptions.hasura_secure ? 'wss://' : 'ws://') + envOptions.hasura_url,
             options: {
                 reconnect: true,
                 connectionParams: {

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -15,14 +15,23 @@ import { HttpClientModule } from '@angular/common/http';
 import { Storage, IonicStorageModule } from '@ionic/storage';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 
-import { environment } from 'src/environments/environment';
+import { StorageEnvService } from './services/storage-env.service';
 
-export function jwtOptionsFactory(storage) {
+export function init(storageEnv: StorageEnvService) {
+  return () => storageEnv.init();
+}
+
+export function jwtOptionsFactory(storage: Storage, storageEnv: StorageEnvService) {
   return {
     tokenGetter: () => {
-      return storage.get(environment.AUTH_TOKEN);
+      const options: interfaces.EnvOptions = storageEnv.getOptions();
+      return storage.get(options.auth_token);
     },
-    whitelistedDomains: [environment.JWT_SERVER]
+    whitelistedDomains: () => {
+      const options: interfaces.EnvOptions = storageEnv.getOptions();
+      console.log(options.jwt_server);
+      return [options.jwt_server];
+    }
   };
 }
 
@@ -40,11 +49,13 @@ export function jwtOptionsFactory(storage) {
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,
         useFactory: jwtOptionsFactory,
-        deps: [Storage],
+        deps: [Storage, StorageEnvService],
       }
     })
   ],
   providers: [
+    StorageEnvService,
+    { provide: APP_INITIALIZER, useFactory: init, deps: [StorageEnvService], multi: true },
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

@@ -27,6 +27,8 @@ export class CollectedPage implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+    console.log(this.authService.user);
+
     this.todoQuery = this.apollo.watchQuery<graphql.CollectedResponse>({
       query: graphql.CollectedQuery
     });

@@ -3,34 +3,38 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Storage } from '@ionic/storage';
-import { environment } from 'src/environments/environment';
 import { tap, catchError } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
+import { StorageEnvService } from './storage-env.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private url = environment.JWT_SERVER + environment.JWT_PATH;
-  public user = null;
-  public userToken = null;
+  private url: string;
+  public user: string = null;
+  public userToken: string = null;
   public authenticationState = new BehaviorSubject(false);
+  private envOptions: interfaces.EnvOptions;
 
   constructor(
     private http: HttpClient,
     private helper: JwtHelperService,
     private storage: Storage,
     private plt: Platform,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private storageEnv: StorageEnvService
     ) {
+      this.envOptions = storageEnv.getOptions();
+      this.url = this.envOptions.jwt_server + this.envOptions.jwt_path;
       this.plt.ready().then(() => {
         this.checkToken();
       });
     }
 
   checkToken() {
-    this.storage.get(environment.AUTH_TOKEN).then(token => {
+    this.storage.get(this.envOptions.auth_token).then(token => {
       if (token) {
         const decoded = this.helper.decodeToken(token);
         const isExpired = this.helper.isTokenExpired(token);
@@ -40,7 +44,7 @@ export class AuthService {
           this.userToken = token;
           this.authenticationState.next(true);
         } else {
-          this.storage.remove(environment.AUTH_TOKEN);
+          this.storage.remove(this.envOptions.auth_token);
         }
       }
     });
@@ -49,7 +53,9 @@ export class AuthService {
   register(credentials) {
     return this.http.post(`${this.url}/register`, credentials).pipe(
       catchError(e => {
-        this.showAlert(e.error.msg);
+
+        console.log(e);
+        this.showAlert(e);
         throw new Error(e);
       })
     );
@@ -59,20 +65,21 @@ export class AuthService {
     return this.http.post(`${this.url}/login`, credentials)
       .pipe(
         tap(res => {
-          this.storage.set(environment.AUTH_TOKEN, res['token']);
+          this.storage.set(this.envOptions.auth_token, res['token']);
           this.user = this.helper.decodeToken(res['token']);
           this.userToken = res['token'];
           this.authenticationState.next(true);
         }),
         catchError(e => {
-          this.showAlert(e.error.msg);
+          console.log(e);
+          this.showAlert(e);
           throw new Error(e);
         })
       );
   }
 
   logout() {
-    this.storage.remove(environment.AUTH_TOKEN).then(() => {
+    this.storage.remove(this.envOptions.auth_token).then(() => {
       this.authenticationState.next(false);
     });
   }
@@ -81,12 +88,12 @@ export class AuthService {
     return this.authenticationState.value;
   }
 
-  showAlert(msg) {
-    const alert = this.alertController.create({
+  async showAlert(msg) {
+    const alert = await this.alertController.create({
       message: msg,
       header: 'Error',
       buttons: ['OK']
     });
-    alert.then(alert => alert.present());
+    return await alert.present();
   }
 }

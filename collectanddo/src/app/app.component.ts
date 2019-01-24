@@ -15,7 +15,7 @@ export class AppComponent {
     {
       title: 'Collect',
       url: '/collect',
-      icon: 'list'
+      icon: 'add'
     },
     {
       title: 'Collected',
@@ -26,6 +26,11 @@ export class AppComponent {
       title: 'Collections',
       url: '/collections',
       icon: 'list'
+    },
+    {
+      title: 'Options',
+      url: '/options',
+      icon: 'options'
     }
   ];
 
@@ -41,6 +46,7 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
+
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
