@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Do
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="loading">
+    Loading...
+  </div>
+  <div *ngIf="error">
+    Error :(
+  </div>
+
+  <div *ngIf="events">
+    <ion-card *ngFor="let event of events">
+
+      <ion-card-header>
+        <ion-card-title>
+          {{event.title || "no title"}}
+        </ion-card-title>
+      </ion-card-header>
+    
+      <ion-card-content>
+        {{event.content}}
+        <br>
+        {{event.start}}
+        <br>
+        {{event.end}}
+      </ion-card-content>
+
+      <div class="text-right">
+
+        <ion-button 
+        size="small" 
+        color="{{event.group.color}}"
+        >
+          {{event.group.title}}
+        </ion-button>
+
+      </div>
+
+    </ion-card>
+  </div>
+
+    <ion-button expand="full" (click)="logout()">Logout</ion-button>
+</ion-content>

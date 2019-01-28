@@ -28,6 +28,11 @@ export class AppComponent {
       icon: 'list'
     },
     {
+      title: 'Do',
+      url: '/do',
+      icon: 'calendar'
+    },
+    {
       title: 'Options',
       url: '/options',
       icon: 'options'

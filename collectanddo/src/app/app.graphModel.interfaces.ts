@@ -19,7 +19,15 @@ namespace graphModel {
         content: string;
         url: string;
         done: boolean;
-        created?: boolean;
+        created?: string;
+        todo_groups?: Array<Todogroup>;
+    }
+    export interface Event {
+        id: number;
+        title: string;
+        content: string;
+        start: string;
+        end: string;
         todo_groups?: Array<Todogroup>;
     }
 }

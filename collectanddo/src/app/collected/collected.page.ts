@@ -1,10 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-
 import { AuthService } from 'src/app/services/auth.service';
-
 import { Subscription } from 'rxjs/Subscription';
-
 import * as graphql from './collected.graphql';
 
 @Component({
@@ -22,7 +19,7 @@ export class CollectedPage implements OnInit, OnDestroy {
 
   constructor(
     private apollo: Apollo,
-    private authService: AuthService,
+    private authService: AuthService
     ) { }
 
   ngOnInit() {

@@ -27,6 +27,11 @@ const routes: Routes = [
     loadChildren: './collections/collections.module#CollectionsPageModule',
     canActivate: [AuthGuardService]
   },
+  {
+    path: 'do',
+    loadChildren: './do/do.module#DoPageModule',
+    canActivate: [AuthGuardService]
+  },
   { path: 'options', loadChildren: './options/options.module#OptionsPageModule' }
 ];
 
