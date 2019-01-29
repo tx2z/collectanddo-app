@@ -7,7 +7,7 @@ subscription DoSubscription (
   $startLast: timestamptz,
 ) {
   event (
-    where: {_and: [{ created: {_gte: $creationDate} },{start: {_gte: $startFirst}}, {start: {_lte: $startLast}}]},
+    where: {_and: [{ created: {_gte: $creationDate} }, {_and: [{start: {_gte: $startFirst}}, {start: {_lte: $startLast}}]}]},
     order_by: {start: asc}
     ) {
     id

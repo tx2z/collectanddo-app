@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Router } from '@angular/router';
-
 import * as graphql from './collect.graphql';
-
 
 @Component({
   selector: 'app-collect',
@@ -23,9 +21,9 @@ export class CollectPage implements OnInit {
 
   ngOnInit() {
     this.newTodo = this.formBuilder.group({
-      title: ['', Validators.required],
-      url: [''],
-      content: [''],
+      title:   ['', Validators.required],
+      url:     [''],
+      content: ['']
     });
   }
 

@@ -32,6 +32,11 @@ const routes: Routes = [
     loadChildren: './do/do.module#DoPageModule',
     canActivate: [AuthGuardService]
   },
+  {
+    path: 'event',
+    loadChildren: './event/event.module#EventPageModule',
+    canActivate: [AuthGuardService]
+  },
   { path: 'options', loadChildren: './options/options.module#OptionsPageModule' }
 ];
 

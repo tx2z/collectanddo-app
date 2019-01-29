@@ -14,7 +14,7 @@ namespace graphModel {
         todo: Todo;
     }
     export interface Todo {
-        id: number;
+        id?: number;
         title: string;
         content: string;
         url: string;
@@ -23,11 +23,12 @@ namespace graphModel {
         todo_groups?: Array<Todogroup>;
     }
     export interface Event {
-        id: number;
-        title: string;
-        content: string;
+        id?: number;
+        title?: string;
+        content?: string;
         start: string;
         end: string;
-        todo_groups?: Array<Todogroup>;
+        group_id?: number;
+        group?: GroupTodo;
     }
 }

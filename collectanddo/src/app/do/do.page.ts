@@ -34,7 +34,14 @@ export class DoPage implements OnInit, OnDestroy {
     this.eventSubscription = this.eventQuery.valueChanges.subscribe(
       ({ data }) => {
         if (data && data.event) {
+          console.log('subscribe');
           console.log(data.event);
+
+          data.event.sort((a: graphModel.Event, b: graphModel.Event) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0));
+
+          console.log('subscribe sort');
+          console.log(data.event);
+
           this.events = [...data.event];
           this.loading = false;
           this.error = null;
@@ -58,6 +65,11 @@ export class DoPage implements OnInit, OnDestroy {
       updateQuery: (prev, { subscriptionData }) => {
 
         if (subscriptionData.data && subscriptionData.data.event && subscriptionData.data.event.length > 0) {
+
+          console.log('more');
+          console.log(subscriptionData.data.event);
+          console.log('prev');
+          console.log(prev);
 
           const newEvent = subscriptionData.data.event[0];
           return Object.assign({}, prev, {
