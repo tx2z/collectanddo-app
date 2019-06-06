@@ -17,6 +17,8 @@ import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 
 import { StorageEnvService } from './services/storage-env.service';
 
+import { OptionsPageModule } from './options/options.module';
+
 export function init(storageEnv: StorageEnvService) {
   return () => storageEnv.init();
 }
@@ -51,7 +53,8 @@ export function jwtOptionsFactory(storage: Storage, storageEnv: StorageEnvServic
         useFactory: jwtOptionsFactory,
         deps: [Storage, StorageEnvService],
       }
-    })
+    }),
+    OptionsPageModule
   ],
   providers: [
     StorageEnvService,

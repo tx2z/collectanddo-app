@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,7 @@ export class AppComponent {
     {
       title: 'Collect',
       url: '/collect',
-      icon: 'add'
+      icon: 'add-circle'
     },
     {
       title: 'Collected',
@@ -36,11 +37,6 @@ export class AppComponent {
       title: 'Event',
       url: '/event',
       icon: 'calendar'
-    },
-    {
-      title: 'Options',
-      url: '/options',
-      icon: 'options'
     }
   ];
 
@@ -49,7 +45,8 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private menu: MenuController
   ) {
     this.initializeApp();
   }
@@ -63,8 +60,10 @@ export class AppComponent {
       this.authService.authenticationState.subscribe(state => {
         if (state) {
           this.router.navigate(['collected']);
+          this.menu.enable(true);
         } else {
           this.router.navigate(['login']);
+          this.menu.enable(false);
         }
       });
 

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import { ModalController } from '@ionic/angular';
+import { OptionsPage } from '../options/options.page';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +15,8 @@ export class LoginPage implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    public modalController: ModalController
     ) { }
 
   ngOnInit() {
@@ -32,6 +35,13 @@ export class LoginPage implements OnInit {
       // Call Login to automatically login the new user
       this.authService.login(this.credentialsForm.value).subscribe();
     });
+  }
+
+  async optionsModal() {
+    const modal = await this.modalController.create({
+      component: OptionsPage
+    });
+    return await modal.present();
   }
 
 }

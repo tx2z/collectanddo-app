@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { StorageEnvService } from '../services/storage-env.service';
 
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-options',
@@ -18,7 +18,8 @@ export class OptionsPage implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private storageEnv: StorageEnvService,
-    public alertController: AlertController
+    public alertController: AlertController,
+    private modalController: ModalController,
   ) {
     this.options = this.storageEnv.getOptions();
   }
@@ -40,16 +41,20 @@ export class OptionsPage implements OnInit {
     console.log(this.optionsForm.value);
     this.storageEnv.setOptions(this.optionsForm.value).then(() => {
       this.presentAlert();
+      this.closeModal();
     });
   }
 
   async presentAlert() {
+    const alert = await this.alertController.create({
+      message: 'Your options have been saved sucesfully.',
+      buttons: ['OK']
+    });
+    return await alert.present();
+  }
 
-  const alert = await this.alertController.create({
-    message: 'Your options have been saved sucesfully.',
-    buttons: ['OK']
-  });
-  return await alert.present();
-}
+  async closeModal() {
+    await this.modalController.dismiss();
+  }
 
 }
