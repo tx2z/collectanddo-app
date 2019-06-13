@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 import * as graphql from './do.graphql';
 
@@ -19,7 +18,6 @@ export class DoPage implements OnInit, OnDestroy {
 
   constructor(
     private apollo: Apollo,
-    private authService: AuthService
     ) { }
 
   ngOnInit() {
@@ -86,7 +84,4 @@ export class DoPage implements OnInit, OnDestroy {
     this.eventSubscription.unsubscribe();
   }
 
-  logout() {
-    this.authService.logout();
-  }
 }

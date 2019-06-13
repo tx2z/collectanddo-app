@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 import * as graphql from './collected.graphql';
 
@@ -19,12 +18,9 @@ export class CollectedPage implements OnInit, OnDestroy {
 
   constructor(
     private apollo: Apollo,
-    private authService: AuthService
     ) { }
 
   ngOnInit() {
-
-    console.log(this.authService.user);
 
     this.todoQuery = this.apollo.watchQuery<graphql.CollectedResponse>({
       query: graphql.CollectedQuery
@@ -75,10 +71,6 @@ export class CollectedPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.todoSubscription.unsubscribe();
-  }
-
-  logout() {
-    this.authService.logout();
   }
 
 }
