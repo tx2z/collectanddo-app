@@ -16,8 +16,8 @@ namespace graphModel {
     export interface Todo {
         id?: number;
         title: string;
-        content: string;
-        url: string;
+        content?: string;
+        url?: string;
         done: boolean;
         created?: string;
         todo_groups?: Array<Todogroup>;

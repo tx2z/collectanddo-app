@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Collection
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="newGroup" (ngSubmit)="saveGroup()">
+    <ion-item>
+      <ion-label position="stacked">Title</ion-label>
+      <ion-input type="text" formControlName="title"></ion-input>
+    </ion-item>
+  
+    <ion-item>
+      <ion-label position="stacked">Content</ion-label>
+      <ion-textarea formControlName="content"></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Color</ion-label>
+      <ion-input type="text" formControlName="color"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Items</ion-label>
+      <ion-list lines="none">
+        <ion-item formArrayName="todos" *ngFor="let todo of newGroup.controls.todos.controls; let i = index">
+          <ion-label>{{todos[i].title}}</ion-label>
+          <ion-checkbox slot="start" [formControlName]="i"></ion-checkbox>
+        </ion-item>
+      </ion-list>
+    </ion-item>
+
+    <ion-button type="submit" [disabled]="!newGroup.valid">
+      Submit
+    </ion-button>
+  </form>
+</ion-content>

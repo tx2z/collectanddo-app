@@ -19,7 +19,7 @@ export class AddButtonComponent implements OnInit {
   }
 
   goToGroup() {
-    this.router.navigate(['/collect']);
+    this.router.navigate(['/collection']);
   }
 
   goToEvent() {

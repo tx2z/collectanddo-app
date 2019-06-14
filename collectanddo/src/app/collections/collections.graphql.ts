@@ -7,8 +7,7 @@ subscription CollectionsSubscription (
   group (
     where: {
       _and: [
-        { created: {_gte: $creationDate} },
-        { group_todos: {} }
+        { created: {_gte: $creationDate} }
       ]}
     order_by: [
       {created: desc},
@@ -36,7 +35,7 @@ subscription CollectionsSubscription (
 export const CollectionsQuery = gql`
 query {
   group (
-    where: { group_todos: {} },
+    where: {  },
     order_by: [
       {created: desc},
       {updated: desc}

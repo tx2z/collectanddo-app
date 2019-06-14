@@ -23,6 +23,11 @@ const routes: Routes = [
     canActivate: [AuthGuardService]
   },
   {
+    path: 'collection',
+    loadChildren: './collection/collection.module#CollectionPageModule',
+    canActivate: [AuthGuardService]
+  },
+  {
     path: 'collections',
     loadChildren: './collections/collections.module#CollectionsPageModule',
     canActivate: [AuthGuardService]

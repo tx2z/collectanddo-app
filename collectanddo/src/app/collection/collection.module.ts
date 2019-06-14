@@ -4,12 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { GraphQLModule } from 'src/app/app.apollo.config';
 import { IonicModule } from '@ionic/angular';
-import { CollectPage } from './collect.page';
+import { CollectionPage } from './collection.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: CollectPage
+    component: CollectionPage
   }
 ];
 
@@ -22,6 +22,6 @@ const routes: Routes = [
     GraphQLModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CollectPage]
+  declarations: [CollectionPage]
 })
-export class CollectPageModule {}
+export class CollectionPageModule {}

@@ -37,6 +37,7 @@ export class CollectPage implements OnInit {
       }
     }).subscribe(({ data }) => {
       console.log('got data', data);
+      this.newTodo.reset();
       this.router.navigate(['/collected']);
     }, (error) => {
       console.log('there was an error sending the query', error);

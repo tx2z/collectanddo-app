@@ -24,6 +24,11 @@ export class AppComponent {
       icon: 'list'
     },
     {
+      title: 'Collection',
+      url: '/collection',
+      icon: 'bookmark'
+    },
+    {
       title: 'Collections',
       url: '/collections',
       icon: 'list'
