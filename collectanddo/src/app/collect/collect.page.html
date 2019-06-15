@@ -25,9 +25,38 @@
       <ion-label position="stacked">Content</ion-label>
       <ion-textarea formControlName="content"></ion-textarea>
     </ion-item>
-    <ion-button 
-    type="submit" 
-    [disabled]="!newTodo.valid">
+
+    <ion-item>
+      <ion-label position="stacked">Collections</ion-label>
+      <ion-button (click)="addNewGroup()">Create Group</ion-button>
+      <ion-item formArrayName="newGroups" *ngFor="let groups of newTodo.controls.newGroups.controls; let idx = index">
+        <ion-grid [formArrayName]="idx">
+          <ion-row>
+            <ion-col>
+              <ion-input type="text" formControlName="title" placeholder="title"></ion-input>
+            </ion-col>
+            <ion-col>
+              <ion-input type="text" formControlName="content" placeholder="content"></ion-input>
+            </ion-col>
+            <ion-col>
+              <ion-input type="text" formControlName="color" placeholder="color"></ion-input>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-button (click)="addCheckboxes()">Show Groups</ion-button>
+      <ion-list lines="none">
+        <ion-item formArrayName="groups" *ngFor="let group of newTodo.controls.groups.controls; let i = index">
+          <ion-label>{{groups[i].title}}</ion-label>
+          <ion-checkbox slot="start" [formControlName]="i"></ion-checkbox>
+        </ion-item>
+      </ion-list>
+    </ion-item>
+    
+    
+    
+    
+    <ion-button type="submit" [disabled]="!newTodo.valid">
       Submit
     </ion-button>
   </form>

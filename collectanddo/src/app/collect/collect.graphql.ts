@@ -14,3 +14,23 @@ mutation insert_todo ($todoValue: [todo_insert_input!]!) {
 export interface Response {
   todo: graphModel.Todo;
 }
+
+export const CollectionsQuery = gql`
+query {
+  group (
+    where: {  },
+    order_by: [
+      {created: desc},
+      {updated: desc}
+    ]
+    ) {
+    id
+    title
+    color
+  }
+}
+`;
+
+export interface CollectionsResponse {
+  group: graphModel.Group;
+}

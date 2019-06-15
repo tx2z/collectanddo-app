@@ -1,9 +1,9 @@
 namespace graphModel {
     export interface Group {
-        id: number;
+        id?: number;
         title: string;
-        content: string;
-        color: string;
+        content?: string;
+        color?: string;
         created?: string;
         group_todos?: Array<GroupTodo>;
     }

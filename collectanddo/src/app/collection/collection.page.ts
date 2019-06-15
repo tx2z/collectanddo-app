@@ -31,24 +31,29 @@ export class CollectionPage implements OnInit {
       todos: new FormArray([])
     });
 
-    this.todoQuery = this.apollo.watchQuery<graphql.CollectedResponse>({
-      query: graphql.CollectedQuery
-    });
-
-    this.todoSubscription = this.todoQuery.valueChanges.subscribe(
-      ({ data }) => {
-        if (data && data.todo) {
-          this.todos = [...data.todo];
-          this.addCheckboxes();
-        }
-      }
-    );
-
   }
 
-  addCheckboxes() {
+  execTodoQuery() {
+    return new Promise(resolve => {
+      this.todoQuery = this.apollo.watchQuery<graphql.CollectedResponse>({
+        query: graphql.CollectedQuery
+      });
+
+      this.todoSubscription = this.todoQuery.valueChanges.subscribe(
+        ({ data }) => {
+          if (data && data.todo) {
+            this.todos = [...data.todo];
+            resolve();
+          }
+        }
+      );
+    })
+  }
+
+  async addCheckboxes() {
+    await this.execTodoQuery();
     this.todos.map((o, i) => {
-      const control = new FormControl(false); // if first item set to true, else false
+      const control = new FormControl(false);
       (this.newGroup.controls.todos as FormArray).push(control);
     });
   }
@@ -74,6 +79,7 @@ export class CollectionPage implements OnInit {
     }
     
     console.log(groupData);
+    
     this.apollo.mutate({
       mutation: graphql.mutation,
       variables: {

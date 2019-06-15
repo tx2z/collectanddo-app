@@ -28,6 +28,7 @@
 
     <ion-item>
       <ion-label position="stacked">Items</ion-label>
+      <ion-button (click)="addCheckboxes()">Add Todos</ion-button>
       <ion-list lines="none">
         <ion-item formArrayName="todos" *ngFor="let todo of newGroup.controls.todos.controls; let i = index">
           <ion-label>{{todos[i].title}}</ion-label>
