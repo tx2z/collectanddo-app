@@ -27,10 +27,11 @@ subscription CollectedSubscription (
 `;
 
 export const CollectedQuery = gql`
-query {
+query CollectedQuery($offset: Int!, $limit: Int!) {
   todo (
     order_by: [{created: desc}, {updated: desc}],
-    limit: 5
+    limit: $limit,
+    offset: $offset
     ) {
     id
     title
