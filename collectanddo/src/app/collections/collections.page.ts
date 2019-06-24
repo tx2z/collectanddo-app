@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { IonInfiniteScroll } from '@ionic/angular'
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
 import * as graphql from './collections.graphql';
@@ -10,11 +11,17 @@ import * as graphql from './collections.graphql';
 })
 export class CollectionsPage implements OnInit, OnDestroy {
 
+  @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
+
   private groupSubscription: Subscription;
   private groupQuery: QueryRef<any>;
   private groups: graphModel.Group[] = [];
   private loading = true;
   private error: any;
+  private limit: number = 100;
+  private offsetCount: number = 0;
+  private offsetIncrease: number = this.limit;
+  private offsetNeedMore: boolean = true;
 
   constructor(
     private apollo: Apollo,
@@ -22,24 +29,58 @@ export class CollectionsPage implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.groupQuery = this.apollo.watchQuery<graphql.CollectionsResponse>({
-      query: graphql.CollectionsQuery
+    this.execGroupQuery().then(result => {
+      this.groups.push.apply(this.groups, result);
+      this.loading = false;
+      this.error = null;
+      const dateNow: string = new Date().toUTCString();
+      const dateNowISO: string = new Date(dateNow).toISOString();
+      this.setupSubscription(dateNowISO);
     });
 
-    this.groupSubscription = this.groupQuery.valueChanges.subscribe(
-      ({ data }) => {
-        if (data && data.group) {
-          this.groups = [...data.group];
-          this.loading = false;
-          this.error = null;
+  }
+
+  execGroupQuery(offset: number = 0) {
+    let groupsResult: graphModel.Group[] = [];
+    return new Promise(resolve => {
+      this.groupQuery = this.apollo.watchQuery<graphql.CollectionsResponse>({
+        query: graphql.CollectionsQuery,
+        variables: {
+          limit: this.limit,
+          offset: offset,
+        },
+      });
+
+      this.groupSubscription = this.groupQuery.valueChanges.subscribe(
+        ({ data }) => {
+          if (data && data.group) {
+            groupsResult.push(...data.group);
+
+            // If we receive less than the offsetIncrease we don't need to recover more
+            if (data.group.length < this.offsetIncrease) {
+              this.offsetNeedMore = false;
+            }
+
+            resolve(groupsResult);
+          }
         }
-      }
-    );
+      );
+    })
+  };
 
-    const dateNow: string = new Date().toUTCString();
-    const dateNowISO: string = new Date(dateNow).toISOString();
-    this.setupSubscription(dateNowISO);
+  uniq(groupArray): graphModel.Group[] {
+    const uniqueArray = groupArray.filter((group, index) => {
+      return index === groupArray.findIndex(obj => {
+        return JSON.stringify(obj) === JSON.stringify(group);
+      });
+    });
+    return uniqueArray;
+  }
 
+  updateGroups(newGroups) {
+    const oldData = this.groups;
+    const newData = [...newGroups, ...oldData];
+    this.groups = this.uniq(newData);
   }
 
   setupSubscription(date: string) {
@@ -51,22 +92,25 @@ export class CollectionsPage implements OnInit, OnDestroy {
       updateQuery: (prev, { subscriptionData }) => {
 
         if (subscriptionData.data && subscriptionData.data.group && subscriptionData.data.group.length > 0) {
-          console.log('prev');
-          console.log(prev);
-          console.log('subscriptionData');
-          console.log(subscriptionData.data);
-          console.log(date);
-
-          const newGroup = subscriptionData.data.group[0];
+          this.updateGroups(subscriptionData.data.group);
 
           return Object.assign({}, prev, {
-            group: [newGroup, ...prev['group']]
+            group: [...subscriptionData.data.group, ...prev['group']]
           });
-        } else {
-          return prev;
         }
       }
     });
+  }
+
+  async loadMore(event) {
+    this.offsetCount = this.offsetCount + this.offsetIncrease;
+    await this.execGroupQuery(this.offsetCount).then(result => {
+      this.groups.push.apply(this.groups, result);
+    });
+    if (this.offsetNeedMore === false) {
+      event.target.disabled = true;
+    }
+    event.target.complete();
   }
 
   ngOnDestroy() {

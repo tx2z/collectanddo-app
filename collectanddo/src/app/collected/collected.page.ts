@@ -38,10 +38,9 @@ export class CollectedPage implements OnInit, OnDestroy {
       this.setupSubscription(dateNowISO);
     });
     
-
   }
 
-  async execTodoQuery(offset: number = 0) {
+  execTodoQuery(offset: number = 0) {
     let todosResult: graphModel.Todo[] = [];
     return new Promise(resolve => {
       this.todoQuery = this.apollo.watchQuery<graphql.CollectedResponse>({
@@ -66,7 +65,7 @@ export class CollectedPage implements OnInit, OnDestroy {
           }
         }
       );
-      })
+    })
   };
   
   uniq(todoArray): graphModel.Todo[] {

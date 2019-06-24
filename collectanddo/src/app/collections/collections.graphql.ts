@@ -33,13 +33,12 @@ subscription CollectionsSubscription (
 `;
 
 export const CollectionsQuery = gql`
-query {
+query CollectionsQuery($offset: Int!, $limit: Int!) {
   group (
     where: {  },
-    order_by: [
-      {created: desc},
-      {updated: desc}
-    ]
+    order_by: [{created: desc}, {updated: desc}],
+    limit: $limit,
+    offset: $offset    
     ) {
     id
     title
