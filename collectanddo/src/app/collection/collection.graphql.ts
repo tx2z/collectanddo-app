@@ -16,8 +16,9 @@ export interface Response {
 }
 
 export const CollectedQuery = gql`
-query {
+query CollectedQuery($query: String!) {
   todo (
+    where: {title: {_ilike: $query}},
     order_by: [{created: desc}, {updated: desc}],
     ) {
     id

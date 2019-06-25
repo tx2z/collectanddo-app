@@ -3,6 +3,7 @@ import { IonInfiniteScroll } from '@ionic/angular'
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
 import * as graphql from './collections.graphql';
+import { CommonService } from '../services/common.service';
 
 @Component({
   selector: 'app-collections',
@@ -25,6 +26,7 @@ export class CollectionsPage implements OnInit, OnDestroy {
 
   constructor(
     private apollo: Apollo,
+    private commonService: CommonService
   ) { }
 
   ngOnInit() {
@@ -68,19 +70,10 @@ export class CollectionsPage implements OnInit, OnDestroy {
     })
   };
 
-  uniq(groupArray): graphModel.Group[] {
-    const uniqueArray = groupArray.filter((group, index) => {
-      return index === groupArray.findIndex(obj => {
-        return JSON.stringify(obj) === JSON.stringify(group);
-      });
-    });
-    return uniqueArray;
-  }
-
   updateGroups(newGroups) {
     const oldData = this.groups;
     const newData = [...newGroups, ...oldData];
-    this.groups = this.uniq(newData);
+    this.groups = this.commonService.arrayUnique(newData);
   }
 
   setupSubscription(date: string) {

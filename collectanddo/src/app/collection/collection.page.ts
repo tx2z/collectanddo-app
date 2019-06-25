@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { Router } from '@angular/router';
 import * as graphql from './collection.graphql';
+import { CommonService } from '../services/common.service';
 
 @Component({
   selector: 'app-collection',
@@ -16,11 +18,13 @@ export class CollectionPage implements OnInit {
   private todoSubscription: Subscription;
   private todoQuery: QueryRef<any>;
   private todos: graphModel.Todo[] = [];
+  private selectedTodos: Array<number> = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    private router: Router
+    private router: Router,
+    private commonService: CommonService
   ) { }
 
   ngOnInit() {
@@ -28,21 +32,36 @@ export class CollectionPage implements OnInit {
       title: ['', Validators.required],
       content: [''],
       color: [''],
+      todoSearch: [''],
       todos: new FormArray([])
+    });
+
+    this.newGroup.controls.todoSearch.valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    )
+    .subscribe(term => {
+      console.log(term);
+      this.addCheckboxes(term);
     });
 
   }
 
-  execTodoQuery() {
+  execTodoQuery(term: string) {
+    const searchQuery: string = '%' + term + '%';
+
     return new Promise(resolve => {
       this.todoQuery = this.apollo.watchQuery<graphql.CollectedResponse>({
-        query: graphql.CollectedQuery
+        query: graphql.CollectedQuery,
+        variables: {
+          query: searchQuery,
+        },
       });
 
       this.todoSubscription = this.todoQuery.valueChanges.subscribe(
         ({ data }) => {
           if (data && data.todo) {
-            this.todos = [...data.todo];
+            this.todos.push(...data.todo);
             resolve();
           }
         }
@@ -50,12 +69,42 @@ export class CollectionPage implements OnInit {
     })
   }
 
-  async addCheckboxes() {
-    await this.execTodoQuery();
-    this.todos.map((o, i) => {
-      const control = new FormControl(false);
-      (this.newGroup.controls.todos as FormArray).push(control);
+  cleanCheckboxes() {
+    let selectedTodos: graphModel.Todo[] = [];
+
+    return new Promise(resolve => {
+
+      // keep the todos we need
+      (this.newGroup.controls.todos as FormArray).controls.map((control, index) => {
+        if (control.value) {
+          selectedTodos.push(this.todos[index]);
+          this.selectedTodos.push(this.todos[index].id);
+        }
+      });
+
+      // remove all controls
+      while ((this.newGroup.controls.todos as FormArray).length !== 0) {
+        (this.newGroup.controls.todos as FormArray).removeAt(0)
+      }
+
+      this.todos = selectedTodos;
+      resolve();
+    })
+  }
+
+  async addCheckboxes(term: string) {
+    await this.cleanCheckboxes();
+
+    if (term !== '') {
+      await this.execTodoQuery(term);
+      this.todos = this.commonService.arrayUnique(this.todos);
+    }
+
+    this.todos.map((todo) => {
+        const control = new FormControl(this.selectedTodos.includes(todo.id));
+        (this.newGroup.controls.todos as FormArray).push(control);
     });
+    
   }
 
   saveGroup() {
@@ -73,6 +122,7 @@ export class CollectionPage implements OnInit {
       });
 
     delete groupData.todos;
+    delete groupData.todoSearch;
     
     groupData.group_todos = {
       data: selectedtodoIds

@@ -41,10 +41,14 @@
             <ion-col>
               <ion-input type="text" formControlName="color" placeholder="color"></ion-input>
             </ion-col>
+            <ion-col>
+              <ion-button (click)="removeNewGroup(idx)">x</ion-button>
+            </ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>
-      <ion-button (click)="addCheckboxes()">Show Groups</ion-button>
+
+      <input type="search" class="form-control" placeholder="Please enter search term" [formControl]="newTodo.controls.groupSearch">      
       <ion-list lines="none">
         <ion-item formArrayName="groups" *ngFor="let group of newTodo.controls.groups.controls; let i = index">
           <ion-label>{{groups[i].title}}</ion-label>
@@ -52,10 +56,7 @@
         </ion-item>
       </ion-list>
     </ion-item>
-    
-    
-    
-    
+
     <ion-button type="submit" [disabled]="!newTodo.valid">
       Submit
     </ion-button>

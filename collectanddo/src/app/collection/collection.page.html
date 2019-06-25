@@ -28,7 +28,7 @@
 
     <ion-item>
       <ion-label position="stacked">Items</ion-label>
-      <ion-button (click)="addCheckboxes()">Add Todos</ion-button>
+      <input type="search" class="form-control" placeholder="Please enter search term" [formControl]="newGroup.controls.todoSearch">
       <ion-list lines="none">
         <ion-item formArrayName="todos" *ngFor="let todo of newGroup.controls.todos.controls; let i = index">
           <ion-label>{{todos[i].title}}</ion-label>

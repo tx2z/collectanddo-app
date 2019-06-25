@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { Router } from '@angular/router';
 import * as graphql from './collect.graphql';
+import { CommonService } from '../services/common.service';
 
 @Component({
   selector: 'app-collect',
@@ -16,12 +18,13 @@ export class CollectPage implements OnInit {
   private groupSubscription: Subscription;
   private groupQuery: QueryRef<any>;
   private groups: graphModel.Group[] = [];
-  private counGNewgroups: number = 0;
+  private selectedGroups: Array<number> = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    private router: Router
+    private router: Router,
+    private commonService: CommonService
     ) { }
 
   ngOnInit() {
@@ -29,21 +32,36 @@ export class CollectPage implements OnInit {
       title:   ['', Validators.required],
       url:     [''],
       content: [''],
+      groupSearch: [''],
       groups: new FormArray([]),
       newGroups: new FormArray([])
     });
+
+    this.newTodo.controls.groupSearch.valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    )
+    .subscribe(term => {
+      console.log(term);
+      this.addCheckboxes(term);
+    });
   }
 
-  execGroupQuery() {
+  execGroupQuery(term: string) {
+    const searchQuery: string = '%' + term + '%';
+
     return new Promise( resolve => {
       this.groupQuery = this.apollo.watchQuery<graphql.CollectionsResponse>({
-        query: graphql.CollectionsQuery
+        query: graphql.CollectionsQuery,
+        variables: {
+          query: searchQuery,
+        },
       });
 
       this.groupSubscription = this.groupQuery.valueChanges.subscribe(
         ({ data }) => {
           if (data && data.group) {
-            this.groups = [...data.group];
+            this.groups.push(...data.group);
             resolve();
           }
         }
@@ -51,12 +69,42 @@ export class CollectPage implements OnInit {
     })
   }
 
-  async addCheckboxes() {
-    await this.execGroupQuery();
-    this.groups.map((o, i) => {
-      const control = new FormControl(false);
+  cleanCheckboxes() {
+    let selectedGroups: graphModel.Group[] = [];
+
+    return new Promise(resolve => {
+
+      // keep the groups we need
+      (this.newTodo.controls.groups as FormArray).controls.map((control, index) => {
+        if (control.value) {
+          selectedGroups.push(this.groups[index]);
+          this.selectedGroups.push(this.groups[index].id);
+        }
+      });
+
+      // remove all controls
+      while ((this.newTodo.controls.groups as FormArray).length !== 0) {
+        (this.newTodo.controls.groups as FormArray).removeAt(0)
+      }
+
+      this.groups = selectedGroups;
+      resolve();
+    })
+  }
+
+  async addCheckboxes(term: string) {
+    await this.cleanCheckboxes();
+
+    if (term !== '') {
+      await this.execGroupQuery(term);
+      this.groups = this.commonService.arrayUnique(this.groups);
+    }
+
+    this.groups.map((todo) => {
+      const control = new FormControl(this.selectedGroups.includes(todo.id));
       (this.newTodo.controls.groups as FormArray).push(control);
     });
+
   }
 
   addNewGroup() {
@@ -67,6 +115,10 @@ export class CollectPage implements OnInit {
     });
 
     (this.newTodo.controls.newGroups as FormArray).push(group);
+  }
+
+  removeNewGroup(index: number) {
+    (this.newTodo.controls.newGroups as FormArray).removeAt(index);
   }
 
   saveTodo() {

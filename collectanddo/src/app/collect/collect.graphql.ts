@@ -16,13 +16,10 @@ export interface Response {
 }
 
 export const CollectionsQuery = gql`
-query {
+query CollectionsQuery($query: String!) {
   group (
-    where: {  },
-    order_by: [
-      {created: desc},
-      {updated: desc}
-    ]
+    where: {title: {_ilike: $query}},
+    order_by: [{created: desc}, {updated: desc}],
     ) {
     id
     title

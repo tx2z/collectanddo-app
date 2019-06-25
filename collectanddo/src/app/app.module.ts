@@ -16,6 +16,7 @@ import { Storage, IonicStorageModule } from '@ionic/storage';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 
 import { StorageEnvService } from './services/storage-env.service';
+import { CommonService } from './services/common.service';
 
 import { OptionsPageModule } from './options/options.module';
 
@@ -61,7 +62,8 @@ export function jwtOptionsFactory(storage: Storage, storageEnv: StorageEnvServic
     { provide: APP_INITIALIZER, useFactory: init, deps: [StorageEnvService], multi: true },
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    CommonService
   ],
   bootstrap: [AppComponent]
 })
