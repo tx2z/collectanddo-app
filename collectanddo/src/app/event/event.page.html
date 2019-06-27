@@ -34,8 +34,22 @@
     </ion-item>
     
     <ion-item>
-      <ion-label color="{{ f.group_id.errors && f.group_id.dirty ? 'danger' : '' }}"  position="stacked">group ID</ion-label>
-      <ion-input color="{{ f.group_id.errors && f.group_id.dirty ? 'danger' : '' }}" type="number" formControlName="group_id"></ion-input>
+      <ion-input type="search" class="form-control" placeholder="Please enter search term"
+    [formControl]="newEvent.controls.groupSearch"></ion-input>
+    </ion-item>
+    
+    <ion-item>
+      <ion-radio-group formControlName="group_id">
+        <ion-list-header>
+          <ion-label>Name</ion-label>
+        </ion-list-header>
+      
+
+        <ion-item  *ngFor="let group of this.groups; let i = index">
+          <ion-label>{{group.title}}</ion-label>
+          <ion-radio slot="start" [value]="group.id"></ion-radio>
+        </ion-item>
+        </ion-radio-group>
     </ion-item>
 
     <ion-button 

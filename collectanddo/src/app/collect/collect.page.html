@@ -48,7 +48,7 @@
         </ion-grid>
       </ion-item>
 
-      <input type="search" class="form-control" placeholder="Please enter search term" [formControl]="newTodo.controls.groupSearch">      
+      <ion-input type="search" class="form-control" placeholder="Please enter search term" [formControl]="newTodo.controls.groupSearch"></ion-input>
       <ion-list lines="none">
         <ion-item formArrayName="groups" *ngFor="let group of newTodo.controls.groups.controls; let i = index">
           <ion-label>{{groups[i].title}}</ion-label>

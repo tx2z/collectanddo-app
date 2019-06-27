@@ -21,3 +21,20 @@ mutation insert_event ($eventValue: [event_insert_input!]!) {
 export interface Response {
   event: graphModel.Event;
 }
+
+export const CollectionsQuery = gql`
+query CollectionsQuery($query: String!) {
+  group (
+    where: {title: {_ilike: $query}},
+    order_by: [{created: desc}, {updated: desc}],
+    ) {
+    id
+    title
+    color
+  }
+}
+`;
+
+export interface CollectionsResponse {
+  group: graphModel.Group;
+}

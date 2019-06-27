@@ -27,8 +27,11 @@
     </ion-item>
 
     <ion-item>
+      <ion-input type="search" class="form-control" placeholder="Please enter search term" [formControl]="newGroup.controls.todoSearch"></ion-input>
+    </ion-item>
+    
+    <ion-item>
       <ion-label position="stacked">Items</ion-label>
-      <input type="search" class="form-control" placeholder="Please enter search term" [formControl]="newGroup.controls.todoSearch">
       <ion-list lines="none">
         <ion-item formArrayName="todos" *ngFor="let todo of newGroup.controls.todos.controls; let i = index">
           <ion-label>{{todos[i].title}}</ion-label>

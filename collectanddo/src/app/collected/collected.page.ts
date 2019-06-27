@@ -19,7 +19,7 @@ export class CollectedPage implements OnInit, OnDestroy {
   private todos: graphModel.Todo[] = [];
   private loading: boolean = true;
   private error: any;
-  private limit: number = 100;
+  private limit: number = 25;
   private offsetCount: number = 0;
   private offsetIncrease: number = this.limit;
   private offsetNeedMore: boolean = true;
@@ -97,6 +97,7 @@ export class CollectedPage implements OnInit, OnDestroy {
   }
 
   async loadMore(event) {
+    console.log("loadmore");
     this.offsetCount = this.offsetCount + this.offsetIncrease;
     await this.execTodoQuery(this.offsetCount).then(result => {
       this.todos.push.apply(this.todos, result);

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Apollo } from 'apollo-angular';
+import { Validators, FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { Subscription } from 'rxjs/Subscription';
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { Router } from '@angular/router';
 import { CustomValidators } from 'ngx-custom-validators';
 import * as graphql from './event.graphql';
@@ -13,6 +15,9 @@ import * as graphql from './event.graphql';
 export class EventPage implements OnInit {
 
   private newEvent: FormGroup;
+  private groupSubscription: Subscription;
+  private groupQuery: QueryRef<any>;
+  private groups: graphModel.Group[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -21,7 +26,6 @@ export class EventPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    const today = new Date();
 
     this.newEvent = this.formBuilder.group({
       title:      [''],
@@ -30,11 +34,58 @@ export class EventPage implements OnInit {
       start_time: ['', Validators.required],
       end_date:   ['', [Validators.required, CustomValidators.date]],
       end_time:   ['', Validators.required],
-      group_id:   ['', [Validators.required, CustomValidators.number]],
+      group_id:   ['', Validators.required],
+      groupSearch: [''],
+    });
+
+    this.newEvent.controls.groupSearch.valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    )
+    .subscribe(term => {
+      this.addRadios(term);
     });
   }
 
-  get f() { return this.newEvent.controls; }
+  execGroupQuery(term: string) {
+    const searchQuery: string = '%' + term + '%';
+
+    return new Promise(resolve => {
+      this.groupQuery = this.apollo.watchQuery<graphql.CollectionsResponse>({
+        query: graphql.CollectionsQuery,
+        variables: {
+          query: searchQuery,
+        },
+      });
+
+      this.groupSubscription = this.groupQuery.valueChanges.subscribe(
+        ({ data }) => {
+          if (data && data.group) {
+            this.groups.push(...data.group);
+            resolve();
+          }
+        }
+      );
+    })
+  }
+
+  addRadios(term: string) {
+    let selectedGroup: graphModel.Group;
+    this.groups.map((group) => {
+      if (group.id === this.newEvent.controls.group_id.value) {
+        selectedGroup = group;
+      }
+    });
+    this.groups = [];
+    if (typeof selectedGroup !== "undefined") {
+      this.groups.push(selectedGroup);
+    }
+
+    if (term !== '') {
+      this.execGroupQuery(term);
+    }
+
+  }
 
   saveEvent() {
     console.log(this.newEvent.value);
