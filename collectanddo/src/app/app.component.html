@@ -17,7 +17,8 @@
             </ion-item>
           </ion-menu-toggle>
         </ion-list>
-        <ion-button expand="full" (click)="logout()">Logout</ion-button>
+        <ion-button expand="full" (click)="auth.login()" *ngIf="!auth.loggedIn">Log In</ion-button>
+        <ion-button expand="full" (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</ion-button>
       </ion-content>
     </ion-menu>
     <ion-router-outlet main></ion-router-outlet>

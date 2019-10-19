@@ -8,24 +8,14 @@
   <ion-grid>
     <ion-row class="ion-justify-content-around">
       <ion-col size-lg="3" size-md="6">
-        <form [formGroup]="credentialsForm" (ngSubmit)="onSubmit()">
+        <ion-button expand="full" (click)="auth.login()" *ngIf="!auth.loggedIn">Log In</ion-button>
+        <ion-button expand="full" (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</ion-button>
 
-          <ion-item>
-            <ion-label position="stacked">Email</ion-label>
-            <ion-input type="email" formControlName="email" tabindex="1"></ion-input>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Password</ion-label>
-            <ion-input type="password" formControlName="password" tabindex="2"></ion-input>
-          </ion-item>
-
-          <ion-button expand="full" type="submit" [disabled]="!credentialsForm.valid" tabindex="3">Login</ion-button>
-          <ion-button expand="full" type="button" (click)="register()" [disabled]="!credentialsForm.valid" tabindex="4">Register</ion-button>
-          <ion-button expand="full" type="button" (click)="optionsModal()" tabindex="5">Options</ion-button>
-
-        </form>
+        <pre *ngIf="auth.userProfile$ | async as profile">
+          <code>{{ profile | json }}</code>
+        </pre>
       </ion-col>
     </ion-row>
   </ion-grid>
+  
 </ion-content>

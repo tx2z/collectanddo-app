@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription } from 'rxjs/Subscription';
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as graphql from './collect.graphql';
 import { CommonService } from '../services/common.service';
@@ -66,11 +66,11 @@ export class CollectPage implements OnInit {
           }
         }
       );
-    })
+    });
   }
 
   cleanCheckboxes() {
-    let selectedGroups: graphModel.Group[] = [];
+    const selectedGroups: graphModel.Group[] = [];
 
     return new Promise(resolve => {
 
@@ -84,12 +84,12 @@ export class CollectPage implements OnInit {
 
       // remove all controls
       while ((this.newTodo.controls.groups as FormArray).length !== 0) {
-        (this.newTodo.controls.groups as FormArray).removeAt(0)
+        (this.newTodo.controls.groups as FormArray).removeAt(0);
       }
 
       this.groups = selectedGroups;
       resolve();
-    })
+    });
   }
 
   async addCheckboxes(term: string) {
@@ -123,7 +123,7 @@ export class CollectPage implements OnInit {
 
   saveTodo() {
     const todoData = this.newTodo.value;
-    let addedGroups = [];
+    const addedGroups = [];
 
     // Add existing goups_ids
     this.newTodo.value.groups
@@ -131,11 +131,11 @@ export class CollectPage implements OnInit {
         if (value) {
           const groupID = {
             group_id: this.groups[index].id
-          }
+          };
           addedGroups.push(groupID);
         }
       });
-    
+
     // Create new groups
     this.newTodo.value.newGroups
       .map((value, index) => {
@@ -144,7 +144,7 @@ export class CollectPage implements OnInit {
             group: {
               data: value
             }
-          }
+          };
           addedGroups.push(newGroup);
         }
       });
@@ -152,10 +152,11 @@ export class CollectPage implements OnInit {
     // remove info we don't need to send
     delete todoData.groups;
     delete todoData.newGroups;
+    delete todoData.groupSearch;
 
     todoData.todo_groups = {
       data: addedGroups
-    }
+    };
 
     console.log(todoData);
 

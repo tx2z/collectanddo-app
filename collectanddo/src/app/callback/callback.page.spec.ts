@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OptionsPage } from './options.page';
+import { CallbackPage } from './callback.page';
 
-describe('OptionsPage', () => {
-  let component: OptionsPage;
-  let fixture: ComponentFixture<OptionsPage>;
+describe('CallbackPage', () => {
+  let component: CallbackPage;
+  let fixture: ComponentFixture<CallbackPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OptionsPage ],
+      declarations: [ CallbackPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OptionsPage);
+    fixture = TestBed.createComponent(CallbackPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

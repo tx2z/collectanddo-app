@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { AuthService } from './services/auth.service';
+import { Auth0Service } from './services/auth0.service';
 import { Router } from '@angular/router';
 import { MenuController } from '@ionic/angular';
 
@@ -11,8 +11,13 @@ import { MenuController } from '@ionic/angular';
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public appPages = [
+    {
+      title: 'Login check',
+      url: '/login',
+      icon: 'add-circle'
+    },
     {
       title: 'Collect',
       url: '/collect',
@@ -49,7 +54,7 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private authService: AuthService,
+    private auth: Auth0Service,
     private router: Router,
     private menu: MenuController
   ) {
@@ -62,20 +67,10 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      this.authService.authenticationState.subscribe(state => {
-        if (state) {
-          this.router.navigate(['collected']);
-          this.menu.enable(true);
-        } else {
-          this.router.navigate(['login']);
-          this.menu.enable(false);
-        }
-      });
-
     });
   }
 
-  logout() {
-    this.authService.logout();
+  ngOnInit() {
+    this.auth.localAuthSetup();
   }
 }

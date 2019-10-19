@@ -1,6 +1,6 @@
-import { AuthGuardService } from './services/auth-guard.service';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard } from './services/auth.guard';
 
 const routes: Routes = [
   {
@@ -15,34 +15,34 @@ const routes: Routes = [
   {
     path: 'collect',
     loadChildren: './collect/collect.module#CollectPageModule',
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   {
     path: 'collected',
     loadChildren: './collected/collected.module#CollectedPageModule',
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   {
     path: 'collection',
     loadChildren: './collection/collection.module#CollectionPageModule',
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   {
     path: 'collections',
     loadChildren: './collections/collections.module#CollectionsPageModule',
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   {
     path: 'do',
     loadChildren: './do/do.module#DoPageModule',
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
   {
     path: 'event',
     loadChildren: './event/event.module#EventPageModule',
-    canActivate: [AuthGuardService]
+    canActivate: [AuthGuard]
   },
-  { path: 'options', loadChildren: './options/options.module#OptionsPageModule' }
+  { path: 'callback', loadChildren: './callback/callback.module#CallbackPageModule' }
 ];
 
 @NgModule({

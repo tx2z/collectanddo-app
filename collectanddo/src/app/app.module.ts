@@ -12,31 +12,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpClientModule } from '@angular/common/http';
-import { Storage, IonicStorageModule } from '@ionic/storage';
-import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 
-import { StorageEnvService } from './services/storage-env.service';
 import { CommonService } from './services/common.service';
-
-import { OptionsPageModule } from './options/options.module';
-
-export function init(storageEnv: StorageEnvService) {
-  return () => storageEnv.init();
-}
-
-export function jwtOptionsFactory(storage: Storage, storageEnv: StorageEnvService) {
-  return {
-    tokenGetter: () => {
-      const options: interfaces.EnvOptions = storageEnv.getOptions();
-      return storage.get(options.auth_token);
-    },
-    whitelistedDomains: () => {
-      const options: interfaces.EnvOptions = storageEnv.getOptions();
-      console.log(options.jwt_server);
-      return [options.jwt_server];
-    }
-  };
-}
 
 @NgModule({
   declarations: [AppComponent],
@@ -46,20 +23,9 @@ export function jwtOptionsFactory(storage: Storage, storageEnv: StorageEnvServic
     IonicModule.forRoot(),
     AppRoutingModule,
     BrowserAnimationsModule,
-    HttpClientModule,
-    IonicStorageModule.forRoot(),
-    JwtModule.forRoot({
-      jwtOptionsProvider: {
-        provide: JWT_OPTIONS,
-        useFactory: jwtOptionsFactory,
-        deps: [Storage, StorageEnvService],
-      }
-    }),
-    OptionsPageModule
+    HttpClientModule
   ],
   providers: [
-    StorageEnvService,
-    { provide: APP_INITIALIZER, useFactory: init, deps: [StorageEnvService], multi: true },
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

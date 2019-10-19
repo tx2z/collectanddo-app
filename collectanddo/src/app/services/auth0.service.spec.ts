@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { StorageEnvService } from './storage-env.service';
+import { Auth0Service } from './auth0.service';
 
-describe('StorageEnvService', () => {
+describe('Auth0Service', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: StorageEnvService = TestBed.get(StorageEnvService);
+    const service: Auth0Service = TestBed.get(Auth0Service);
     expect(service).toBeTruthy();
   });
 });
